@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slider with Thumbnails and Navigation Arrows</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 600px;
+            background-color: #222;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .thumbnails {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+
+        .thumbnails img {
+            width: 80px;
+            height: 60px;
+            margin: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            transition: border 0.3s;
+        }
+
+        .thumbnails img.active {
+            border: 2px solid #fff;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10%;
+            padding: 10px;
+            user-select: none;
+        }
+
+        .arrow-left {
+            left: 10px;
+            
+        }
+
+        .arrow-right {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slider-container">
+    <div class="main-image" id="mainImageContainer">
+    </div>
+
+    <div class="thumbnails" id="thumbnailsContainer">
+    </div>
+
+
+    <div class="arrow arrow-left" id="prevArrow">&#10094;</div>
+    <div class="arrow arrow-right" id="nextArrow">&#10095;</div>
+</div>
+
+<script>
+    
+    const images = [
+        'img1.jpg', 
+        'img2.jpg',
+        'img3.avif',
+        'img4.jpg',
+        'img5.webp'
+    ];
+    let currentIndex = 0;
+
+
+    function displayMainImage(index) {
+        const mainImageContainer = document.getElementById('mainImageContainer');
+        mainImageContainer.innerHTML = ''; 
+
+        const img = document.createElement('img');
+        img.src = images[index];
+        mainImageContainer.appendChild(img);
+
+        
+        document.querySelectorAll('.thumbnails img').forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+    }
+
+    
+    function createThumbnails() {
+        const thumbnailsContainer = document.getElementById('thumbnailsContainer');
+        images.forEach((image, index) => {
+            const thumbnail = document.createElement('img');
+            thumbnail.src = image;
+            thumbnail.alt = `Thumbnail ${index + 1}`;
+            thumbnail.addEventListener('click', () => {
+                currentIndex = index;
+                displayMainImage(currentIndex);
+            });
+
+            thumbnailsContainer.appendChild(thumbnail);
+        });
+    }
+
+    
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        displayMainImage(currentIndex);
+    }
+
+   
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        displayMainImage(currentIndex);
+    }
+
+
+    function initSlider() {
+        displayMainImage(currentIndex);
+        createThumbnails();
+        
+
+        document.getElementById('prevArrow').addEventListener('click', prevImage);
+        document.getElementById('nextArrow').addEventListener('click', nextImage);
+    }
+
+    window.onload = initSlider;
+</script>
+
+</body>
+</html>
